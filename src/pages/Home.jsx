@@ -10,7 +10,7 @@ const fade = i => ({ initial: { opacity: 0, y: 18 }, whileInView: { opacity: 1, 
 
 export default function Home() {
   const done = useProgress(s => s.done)
-  const all = ordered()
+  const all = ordered().filter(x => x.ready)          // only chapters that actually exist
   const resume = all.find(x => !done[x.id]) || all[0]
   const nDone = all.filter(x => done[x.id]).length
 
@@ -40,7 +40,7 @@ export default function Home() {
 
       <section className="tracks">
         {['dl', 'cuda'].map((tr, k) => {
-          const ts = byTrack(tr), tk = tracks[tr], n = ts.filter(x => done[x.id]).length
+          const ts = byTrack(tr), tk = tracks[tr], n = ts.filter(x => x.ready && done[x.id]).length
           return (
             <motion.div key={tr} className="tcard" style={{ '--acc': tk.acc }} {...fade(k)}>
               <div className="tc-h"><h2>{tk.name}</h2><span>{n}/{ts.length} done</span></div>
@@ -49,7 +49,9 @@ export default function Home() {
               <ol className="path">
                 {ts.map(x => (
                   <li key={x.id}>
-                    <Link to={'/t/' + x.id}><b>{x.title}</b><span>{x.blurb}</span></Link>
+                    {x.ready
+                      ? <Link to={'/t/' + x.id}><b>{x.title}</b><span>{x.blurb}</span></Link>
+                      : <div className="soon"><b>{x.title}<em>soon</em></b><span>{x.blurb}</span></div>}
                   </li>
                 ))}
               </ol>

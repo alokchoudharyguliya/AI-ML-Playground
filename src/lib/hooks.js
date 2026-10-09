@@ -23,6 +23,7 @@ export function useCanvas(height, draw, { animate = false } = {}) {
 
   useEffect(() => {
     const cv = ref.current
+    if (!cv) return
     const fit = () => {
       const r = cv.getBoundingClientRect()
       if (!r.width) return

@@ -6,9 +6,13 @@ export const tracks = {
 }
 
 const mods = import.meta.glob('./*/*/index.jsx')
-const L = d => () => (mods[`./${d}/index.jsx`] ? mods[`./${d}/index.jsx`]() : Promise.reject(new Error('Chapter not written yet: ' + d)))
+const L = d => {
+  const f = () => (mods[`./${d}/index.jsx`] ? mods[`./${d}/index.jsx`]() : Promise.reject(new Error('Chapter not written yet: ' + d)))
+  f.ready = !!mods[`./${d}/index.jsx`]   // false for chapters that are registered but not authored yet
+  return f
+}
 
-const t = (track, order, id, title, blurb, extra, load) => ({ track, order, id, title, blurb, ...extra, load })
+const t = (track, order, id, title, blurb, extra, load) => ({ track, order, id, title, blurb, ...extra, load, ready: !!load.ready })
 
 export const topics = [
   t('dl', 1, 'cnn', 'Convolutional Networks',
@@ -47,16 +51,16 @@ export const topics = [
     { level: 'Intermediate', time: '40 min', tags: ['grid', 'block', 'warp', 'SM'] }, L('cuda/exec')),
   t('cuda', 2, 'cuda-memory', 'The Memory Hierarchy & Roofline',
     'Registers, shared memory, L2, HBM: latencies, bandwidth and the roofline model that tells you what to optimize.',
-    { level: 'Intermediate', time: '40 min', tags: ['registers', 'HBM', 'roofline'] }, L('cuda/memory')),
+    { level: 'Intermediate', time: '50 min', tags: ['registers', 'HBM', 'roofline'] }, L('cuda/memory')),
   t('cuda', 3, 'cuda-tiled', 'Shared Memory & Tiled MatMul',
     'Step through tiled matrix multiply: cooperative loads, __syncthreads, and 16x less global traffic.',
-    { level: 'Advanced', time: '45 min', tags: ['tiling', 'shared memory', 'GEMM'] }, L('cuda/tiled')),
+    { level: 'Advanced', time: '50 min', tags: ['tiling', 'shared memory', 'GEMM'] }, L('cuda/tiled')),
   t('cuda', 4, 'cuda-coalesce', 'Coalescing & Bank Conflicts',
     'Count real memory transactions and shared-memory bank conflicts for any access pattern.',
-    { level: 'Advanced', time: '40 min', tags: ['coalescing', 'banks', 'padding'] }, L('cuda/coalesce')),
+    { level: 'Advanced', time: '45 min', tags: ['coalescing', 'banks', 'padding'] }, L('cuda/coalesce')),
   t('cuda', 5, 'cuda-warp', 'Warps: Divergence, Shuffles, Reduction',
     'SIMT execution, divergence masks, warp-level primitives and the fastest way to reduce.',
-    { level: 'Advanced', time: '45 min', tags: ['SIMT', 'divergence', 'shuffle'] }, L('cuda/warp')),
+    { level: 'Advanced', time: '50 min', tags: ['SIMT', 'divergence', 'shuffle'] }, L('cuda/warp')),
   t('cuda', 6, 'cuda-occupancy', 'Occupancy & Latency Hiding',
     'Registers, shared memory and block size fight over SM resources. Compute occupancy and see the limiter.',
     { level: 'Advanced', time: '35 min', tags: ['occupancy', 'registers'] }, L('cuda/occupancy')),

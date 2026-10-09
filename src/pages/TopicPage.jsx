@@ -24,16 +24,17 @@ export default function TopicPage() {
   const meta = find(id)
   const [mod, setMod] = useState(null)
   const [tab, setTab] = useState('theory')
+  const [loadErr, setLoadErr] = useState(null)
   const done = useProgress(s => s.done[id])
   const toggle = useProgress(s => s.toggle)
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 24 })
 
   useEffect(() => {
-    setMod(null); setTab('theory')
+    setMod(null); setTab('theory'); setLoadErr(null)
     if (!meta) return
     let live = true
-    meta.load().then(m => live && setMod(m.default))
+    meta.load().then(m => live && setMod(m.default)).catch(e => live && setLoadErr(e))
     document.title = meta.title + ' — Neural Atlas'
     return () => { live = false }
   }, [id])
@@ -59,7 +60,9 @@ export default function TopicPage() {
       <section className="lab">
         <div className="lab-head"><span className="badge">● Interactive lab</span><h2>{mod?.vizTitle || 'Playground'}</h2></div>
         <div className="lab-body">
-          {mod ? <Boundary key={id}><mod.Lab /></Boundary> : <div className="loading">Loading lab…</div>}
+          {mod ? <Boundary key={id}><mod.Lab /></Boundary>
+            : loadErr ? <div className="loading">{meta.ready ? 'This chapter failed to load: ' + String(loadErr.message || loadErr) : 'Coming soon: this chapter has not been written yet.'}</div>
+            : <div className="loading">Loading lab…</div>}
         </div>
         {mod?.tryIt && (
           <ul className="try">
@@ -77,7 +80,7 @@ export default function TopicPage() {
       <div className="pane prose">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div key={tab + (mod ? 'y' : 'n')} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-            {!mod ? <div className="loading">Loading…</div> : (
+            {!mod ? <div className="loading">{loadErr ? '—' : 'Loading…'}</div> : (
               <>
                 {tab === 'theory' && <Md>{mod.theory}</Md>}
                 {tab === 'math' && <Md>{mod.math}</Md>}
