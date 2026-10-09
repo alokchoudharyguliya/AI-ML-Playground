@@ -63,13 +63,13 @@ export const topics = [
     { level: 'Advanced', time: '50 min', tags: ['SIMT', 'divergence', 'shuffle'] }, L('cuda/warp')),
   t('cuda', 6, 'cuda-occupancy', 'Occupancy & Latency Hiding',
     'Registers, shared memory and block size fight over SM resources. Compute occupancy and see the limiter.',
-    { level: 'Advanced', time: '35 min', tags: ['occupancy', 'registers'] }, L('cuda/occupancy')),
+    { level: 'Advanced', time: '45 min', tags: ['occupancy', 'registers'] }, L('cuda/occupancy')),
   t('cuda', 7, 'cuda-streams', 'Streams & Async Overlap',
     'Pipeline copy and compute with streams and pinned memory; simulate the timeline.',
-    { level: 'Advanced', time: '30 min', tags: ['streams', 'pinned', 'overlap'] }, L('cuda/streams')),
+    { level: 'Advanced', time: '45 min', tags: ['streams', 'pinned', 'overlap'] }, L('cuda/streams')),
   t('cuda', 8, 'cuda-flash', 'Tensor Cores & FlashAttention',
     'Matrix-multiply hardware, mixed precision, and how tiling + online softmax makes attention IO-aware.',
-    { level: 'Expert', time: '55 min', tags: ['WMMA', 'FlashAttention', 'FP16/FP8'] }, L('cuda/flash'))
+    { level: 'Expert', time: '60 min', tags: ['WMMA', 'FlashAttention', 'FP16/FP8'] }, L('cuda/flash'))
 ]
 
 export const byTrack = tr => topics.filter(x => x.track === tr).sort((a, b) => a.order - b.order)
